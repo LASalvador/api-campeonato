@@ -1,1 +1,5 @@
 Flask==0.10.1
+sqlalchemy
+flask-sqlalchemy
+flask-migrate
+python-dotenv
