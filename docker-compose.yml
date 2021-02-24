@@ -19,4 +19,4 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: olamundo
     volumes:
-      - .api/db/data/:/var/lib/mysql
+      - ./api/db/data/:/var/lib/mysql
