@@ -36,6 +36,19 @@ def get_competitor():
 
     return response
 
+@app.route('/competitor/<int:competitor_id>')
+def get_competitor_by_id(competitor_id):
+    competitor = database.get_by_id(Competitor, competitor_id)
+
+    competitor_dict = competitor.asdict()
+
+    response = jsonify({
+        'competitor': competitor_dict
+    })
+    
+    return response
+
+
 @app.route('/tournament')
 def get_tournament():
     tournament_response = database.get_all(Tournament)
