@@ -4,6 +4,8 @@ def get_all(model):
     data = model.query.all()
     return data
 
+def get_by_id(model, id):
+    return model.query.get_or_404(id)
 
 def add_instance(model, **kwargs):
     instance = model(**kwargs)
