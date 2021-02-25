@@ -55,6 +55,11 @@ def post_tournament():
     competitors = data['competitors']
     amount_match = len(competitors)
     amount_competitors = len(competitors)
+    
+    competitors_target = db.session.query(Competitor).filter(Competitor.id.in_(competitors)).all()
+
+    if len(competitors_target) != len(competitors):
+        return {"error":'Some Competitor was not Found'}, 404
 
     tournament = database.add_instance(Tournament, name=name, amount_match = amount_match, amount_competitors = amount_competitors)
     # validar a existencia desses caras
