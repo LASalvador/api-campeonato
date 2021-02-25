@@ -111,6 +111,22 @@ def get_match_by_tournament(tournament_id):
 
     return response
 
+@app.route('/tournament/<int:tournament_id>/result')
+def get_tournament_result(tournament_id):
+    # validar se o campeonato já terminou
+    last_matches = Match.query.filter_by(tournament_id=tournament_id).order_by(Match.match.desc()).limit(2)
+    result = {}
+    result[1] = last_matches[0].winner
+    result[2] = last_matches[0].loser
+    result[3] = last_matches[1].winner
+    result[4] = last_matches[1].loser
+    
+    response = jsonify({
+        'result': result
+    })
+
+    return response
+
 @app.route('/match', methods=['POST'])
 def post_match():
     data = request.json
