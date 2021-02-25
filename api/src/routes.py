@@ -133,3 +133,16 @@ def get_match():
     })
 
     return response
+
+
+@app.route('/match/<int:match_id>')
+def get_match_by_id(match_id):
+    match = database.get_by_id(Match, match_id)
+
+    match_dict = match.asdict()
+
+    response = jsonify({
+        'match': match_dict
+    })
+
+    return response
