@@ -119,3 +119,17 @@ def post_match():
     })
 
     return response
+
+@app.route('/match')
+def get_match():
+    match_response = database.get_all(Match)
+    match_list = []
+
+    for match in match_response:
+        match_list.append(match.asdict())
+
+    response = jsonify({
+        'match': match_list
+    })
+
+    return response
