@@ -118,6 +118,14 @@ def get_match_by_tournament(tournament_id):
 
 @app.route('/tournament/<int:tournament_id>/result')
 def get_tournament_result(tournament_id):
+    tournament = database.get(Tournament,tournament_id)
+    if not tournament:
+        return  {"error":"Tournament not found"}, 404
+    
+    amount_current_matches = Match.query.filter_by(tournament_id=tournament_id).count()
+    if amount_current_matches != tournament.amount_match:
+        return {"error": "Tournament was not finished"}, 404
+
     # validar se o campeonato já terminou
     last_matches = Match.query.filter_by(tournament_id=tournament_id).order_by(Match.match.desc()).limit(2)
     result = {}
