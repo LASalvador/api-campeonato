@@ -96,6 +96,20 @@ def get_tournament_by_id(tournament_id):
 
     return response
 
+@app.route('/tournament/<int:tournament_id>/match')
+def get_match_by_tournament(tournament_id):
+    matches = Match.query.filter_by(tournament_id=tournament_id).all()
+    
+    match_list = []
+
+    for match in matches:
+        match_list.append(match.asdict())
+
+    response = jsonify({
+        'match': match_list
+    })
+
+    return response
 
 @app.route('/match', methods=['POST'])
 def post_match():
