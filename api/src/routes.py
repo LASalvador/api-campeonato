@@ -62,7 +62,7 @@ def post_tournament():
         return {"error":'Some Competitor was not Found'}, 404
 
     tournament = database.add_instance(Tournament, name=name, amount_match = amount_match, amount_competitors = amount_competitors)
-    # validar a existencia desses caras
+    
     for competitor in competitors:
         database.add_instance(TournamentCompetitor, tournament_id=tournament.id, competitor_id = competitor)
 
