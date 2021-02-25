@@ -176,3 +176,7 @@ def get_match_by_id(match_id):
     })
 
     return response
+
+@app.errorhandler(404)
+def not_found(error):
+    return {'error': 'resource not found'}, 404
