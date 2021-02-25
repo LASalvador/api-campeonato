@@ -130,14 +130,23 @@ def get_tournament_result(tournament_id):
 @app.route('/match', methods=['POST'])
 def post_match():
     data = request.json
-    # validar a existencia desses caras
     loser = data['loser']
     winner = data['winner']
     tournament_id =  data['tournament']
-    # gerar esse número automaticamente de acordo com registro desse torneio
-    match_number = data['match']
 
-    match = database.add_instance(Match, loser=loser, winner=winner,tournament_id=tournament_id, match = match_number)
+    if not database.get(Competitor,loser) or not database.get(Competitor,winner):
+        return {"error":"Competitor(winner or loser) not found"}, 404
+    tournament = database.get(Tournament,tournament_id)
+    if not tournament:
+        return  {"error":"Tournament not found"}, 404
+
+    before_match_number = Match.query.filter_by(tournament_id=tournament_id).count()
+    next_match_number = before_match_number + 1
+
+    if (next_match_number >= tournament.amount_match):
+        return {"error":'Match OverFlow'}, 400
+
+    match = database.add_instance(Match, loser=loser, winner=winner,tournament_id=tournament_id, match = next_match_number)
 
     database.add_instance(MatchCompetitor, match_id = match.id, competitor_id = winner)
     database.add_instance(MatchCompetitor, match_id = match.id, competitor_id = loser)
