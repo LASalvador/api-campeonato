@@ -82,3 +82,16 @@ def get_tournament():
     })
 
     return response
+
+
+@app.route('/tournament/<int:tournament_id>')
+def get_tournament_by_id(tournament_id):
+    tournament = database.get_by_id(Tournament, tournament_id)
+
+    tournament_dict = tournament.asdict()
+
+    response = jsonify({
+        'tournament': tournament_dict
+    })
+
+    return response
