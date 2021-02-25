@@ -38,7 +38,7 @@ def get_competitor():
 
 @app.route('/competitor/<int:competitor_id>')
 def get_competitor_by_id(competitor_id):
-    competitor = database.get_by_id(Competitor, competitor_id)
+    competitor = database.get_or_404(Competitor, competitor_id)
 
     competitor_dict = competitor.asdict()
 
@@ -86,7 +86,7 @@ def get_tournament():
 
 @app.route('/tournament/<int:tournament_id>')
 def get_tournament_by_id(tournament_id):
-    tournament = database.get_by_id(Tournament, tournament_id)
+    tournament = database.get_or_404(Tournament, tournament_id)
 
     tournament_dict = tournament.asdict()
 
@@ -167,7 +167,7 @@ def get_match():
 
 @app.route('/match/<int:match_id>')
 def get_match_by_id(match_id):
-    match = database.get_by_id(Match, match_id)
+    match = database.get_or_404(Match, match_id)
 
     match_dict = match.asdict()
 
