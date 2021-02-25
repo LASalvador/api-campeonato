@@ -21,7 +21,7 @@ def post_competitor():
 
     return response
 
-@app.route('/competitor')
+@app.route('/competitors')
 def get_competitor():
 
     competitor_response = database.get_all(Competitor)
@@ -69,7 +69,7 @@ def post_tournament():
 
     return response
 
-@app.route('/tournament')
+@app.route('/tournaments')
 def get_tournament():
     tournament_response = database.get_all(Tournament)
     tournament_list = []
@@ -159,7 +159,7 @@ def post_match():
 
     return response
 
-@app.route('/match')
+@app.route('/matches')
 def get_match():
     match_response = database.get_all(Match)
     match_list = []
