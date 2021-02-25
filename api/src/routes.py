@@ -1,6 +1,6 @@
 from flask import request, json, jsonify
 from src import app, db, database
-from src.models import Competitor, Tournament
+from src.models import Competitor, Tournament, TournamentCompetitor
 
 @app.route('/')
 def index():
@@ -48,6 +48,26 @@ def get_competitor_by_id(competitor_id):
     
     return response
 
+@app.route('/tournament', methods=['POST'])
+def post_tournament():
+    data = request.json
+    name = data['name']
+    competitors = data['competitors']
+    amount_match = len(competitors)
+    amount_competitors = len(competitors)
+
+    tournament = database.add_instance(Tournament, name=name, amount_match = amount_match, amount_competitors = amount_competitors)
+
+    for competitor in competitors:
+        database.add_instance(TournamentCompetitor, tournament_id=tournament.id, competitor_id = competitor)
+
+    tournament_dict = tournament.asdict()
+
+    response = jsonify({
+        'tournament': tournament_dict
+    })
+
+    return response
 
 @app.route('/tournament')
 def get_tournament():
