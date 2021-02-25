@@ -24,6 +24,7 @@ def post_competitor():
     parameters:
         - in: body
           name: name
+          description: Competitor's name
     responses:
         200:
             description: Competitor Created
@@ -76,6 +77,7 @@ def get_competitor_by_id(competitor_id):
           in: path
           required: true
           type: int
+          description: competitor id
     responses:
         200:
             description: Competitor 
@@ -104,10 +106,12 @@ def post_tournament():
           in: body
           type: string
           required: true
+          description: tournament name
         - name: competitors
           in: body
           type: array
           required: true
+          description: array of competitors in the tournament
     responses:
         200:
             description: Created Tournament
@@ -174,6 +178,7 @@ def get_tournament_by_id(tournament_id):
           in: path
           type: int
           required: true
+          description: tournament id
     responses:
         200:
             description: Tournament 
@@ -202,6 +207,7 @@ def get_match_by_tournament(tournament_id):
           in: path
           type: int
           required: true
+          description: tournament id
     responses:
         200:
             description: all matches from tournament
@@ -231,6 +237,7 @@ def get_tournament_result(tournament_id):
           in: path
           type: int
           required: true
+          description: tournament id
     responses:
         404:
             description: tournament not found
@@ -274,14 +281,17 @@ def post_match():
           in: body
           type: int
           required: true
+          description: match's loser
         - name: winner
           in: body
           type: int
           required: true
+          description: match's winner
         - name: tournament
           in: body
           required: true
           type: int
+          description: tournament id
     responses:
         400:
             description: Match OverFlow
@@ -356,6 +366,7 @@ def get_match_by_id(match_id):
           in: path
           type: int
           required: true
+          description: match id
     responses:
         200:
             description: Match 
