@@ -1,13 +1,33 @@
 from flask import request, json, jsonify
+from flask_swagger import swagger
 from src import app, db, database
 from src.models import Competitor, Tournament, TournamentCompetitor, Match, MatchCompetitor
 
 @app.route('/')
 def index():
+    """
+    Test Server
+    ---
+    responses:
+        200:
+            description: Server Works
+    """
     return 'Server Works!!'
 
 @app.route('/competitor', methods=['POST'])
 def post_competitor():
+    """
+    Create a competitor
+    ---
+    tags:
+        - Competitor
+    parameters:
+        - in: body
+          name: name
+    responses:
+        200:
+            description: Competitor Created
+    """
     data = request.json
     name = data['name']
 
@@ -23,7 +43,15 @@ def post_competitor():
 
 @app.route('/competitors')
 def get_competitor():
-
+    """
+    Get all Competitors
+    ---
+    tags:
+        - Competitor
+    responses:
+        200:
+            description: All Competitor
+    """
     competitor_response = database.get_all(Competitor)
     competitor_list = []
 
@@ -38,6 +66,22 @@ def get_competitor():
 
 @app.route('/competitor/<int:competitor_id>')
 def get_competitor_by_id(competitor_id):
+    """
+    Get competitor by ID
+    ---
+    tags:
+        - Competitor
+    parameters:
+        - name: competitor_id
+          in: path
+          required: true
+          type: int
+    responses:
+        200:
+            description: Competitor 
+        404:
+            description: Resource not found
+    """
     competitor = database.get_or_404(Competitor, competitor_id)
 
     competitor_dict = competitor.asdict()
@@ -50,6 +94,26 @@ def get_competitor_by_id(competitor_id):
 
 @app.route('/tournament', methods=['POST'])
 def post_tournament():
+    """
+    Create tournament
+    ---
+    tags:
+        - Tournament
+    parameters:
+        - name: name
+          in: body
+          type: string
+          required: true
+        - name: competitors
+          in: body
+          type: array
+          required: true
+    responses:
+        200:
+            description: Created Tournament
+        404:
+            description: Some Competitor was not Found
+    """
     data = request.json
     name = data['name']
     competitors = data['competitors']
@@ -76,6 +140,15 @@ def post_tournament():
 
 @app.route('/tournaments')
 def get_tournament():
+    """
+    Get all Tournaments
+    ---
+    tags:
+        - Tournament
+    responses:
+        200:
+            description: All Tournament
+    """
     tournament_response = database.get_all(Tournament)
     tournament_list = []
 
@@ -91,6 +164,22 @@ def get_tournament():
 
 @app.route('/tournament/<int:tournament_id>')
 def get_tournament_by_id(tournament_id):
+    """
+    Get Tournament by ID
+    ---
+    tags:
+        - Tournament
+    parameters:
+        - name: tournament_id
+          in: path
+          type: int
+          required: true
+    responses:
+        200:
+            description: Tournament 
+        404:
+            description: Resource not found
+    """
     tournament = database.get_or_404(Tournament, tournament_id)
 
     tournament_dict = tournament.asdict()
@@ -103,6 +192,20 @@ def get_tournament_by_id(tournament_id):
 
 @app.route('/tournament/<int:tournament_id>/match')
 def get_match_by_tournament(tournament_id):
+    """
+    Get all Matches from tournament
+    ---
+    tags: 
+        - Tournament
+    parameters:
+        - name: tournament_id
+          in: path
+          type: int
+          required: true
+    responses:
+        200:
+            description: all matches from tournament
+    """
     matches = Match.query.filter_by(tournament_id=tournament_id).all()
     
     match_list = []
@@ -118,13 +221,32 @@ def get_match_by_tournament(tournament_id):
 
 @app.route('/tournament/<int:tournament_id>/result')
 def get_tournament_result(tournament_id):
+    """
+    Get result (top 4) from tournament
+    ---
+    tags:
+        - Tournament
+    parameters:
+        - name: tournament_id
+          in: path
+          type: int
+          required: true
+    responses:
+        404:
+            description: tournament not found
+        400:
+            description: tournament was not finished
+        200:
+            description: top 4 from tournament
+
+    """
     tournament = database.get(Tournament,tournament_id)
     if not tournament:
         return  {"error":"Tournament not found"}, 404
     
     amount_current_matches = Match.query.filter_by(tournament_id=tournament_id).count()
     if amount_current_matches != tournament.amount_match:
-        return {"error": "Tournament was not finished"}, 404
+        return {"error": "Tournament was not finished"}, 400
 
     # validar se o campeonato já terminou
     last_matches = Match.query.filter_by(tournament_id=tournament_id).order_by(Match.match.desc()).limit(2)
@@ -142,6 +264,32 @@ def get_tournament_result(tournament_id):
 
 @app.route('/match', methods=['POST'])
 def post_match():
+    """
+    Post match
+    ---
+    tags:
+        - Match
+    parameters:
+        - name: loser
+          in: body
+          type: int
+          required: true
+        - name: winner
+          in: body
+          type: int
+          required: true
+        - name: tournament
+          in: body
+          required: true
+          type: int
+    responses:
+        400:
+            description: Match OverFlow
+        404:
+            description: Competitor or Tournament not found
+        200:
+            description: Created Match
+    """
     data = request.json
     loser = data['loser']
     winner = data['winner']
@@ -174,6 +322,15 @@ def post_match():
 
 @app.route('/matches')
 def get_match():
+    """
+    Get all matches
+    ---
+    tags:
+        - Match
+    responses:
+        200:
+            description: all Matches
+    """
     match_response = database.get_all(Match)
     match_list = []
 
@@ -189,6 +346,22 @@ def get_match():
 
 @app.route('/match/<int:match_id>')
 def get_match_by_id(match_id):
+    """
+    Get match by id
+    --- 
+    tags:
+        - Match
+    parameters:
+        - name: match_id
+          in: path
+          type: int
+          required: true
+    responses:
+        200:
+            description: Match 
+        404:
+            description: resource not found
+    """
     match = database.get_or_404(Match, match_id)
 
     match_dict = match.asdict()
@@ -202,3 +375,11 @@ def get_match_by_id(match_id):
 @app.errorhandler(404)
 def not_found(error):
     return {'error': 'resource not found'}, 404
+
+
+@app.route('/docs')
+def get_docs():
+    swag = swagger(app)
+    swag['info']['version'] = "1.0"
+    swag['info']['title'] = "API-Campeonato Docs"
+    return jsonify(swag)
