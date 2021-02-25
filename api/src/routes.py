@@ -1,6 +1,6 @@
 from flask import request, json, jsonify
 from src import app, db, database
-from src.models import Competitor, Tournament, TournamentCompetitor
+from src.models import Competitor, Tournament, TournamentCompetitor, Match, MatchCompetitor
 
 @app.route('/')
 def index():
@@ -57,7 +57,7 @@ def post_tournament():
     amount_competitors = len(competitors)
 
     tournament = database.add_instance(Tournament, name=name, amount_match = amount_match, amount_competitors = amount_competitors)
-
+    # validar a existencia desses caras
     for competitor in competitors:
         database.add_instance(TournamentCompetitor, tournament_id=tournament.id, competitor_id = competitor)
 
@@ -92,6 +92,30 @@ def get_tournament_by_id(tournament_id):
 
     response = jsonify({
         'tournament': tournament_dict
+    })
+
+    return response
+
+
+@app.route('/match', methods=['POST'])
+def post_match():
+    data = request.json
+    # validar a existencia desses caras
+    loser = data['loser']
+    winner = data['winner']
+    tournament_id =  data['tournament']
+    # gerar esse número automaticamente de acordo com registro desse torneio
+    match_number = data['match']
+
+    match = database.add_instance(Match, loser=loser, winner=winner,tournament_id=tournament_id, match = match_number)
+
+    database.add_instance(MatchCompetitor, match_id = match.id, competitor_id = winner)
+    database.add_instance(MatchCompetitor, match_id = match.id, competitor_id = loser)
+
+    match_dict = match.asdict()
+
+    response = jsonify({
+        'match': match_dict
     })
 
     return response
