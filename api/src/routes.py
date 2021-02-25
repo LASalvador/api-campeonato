@@ -148,7 +148,7 @@ def post_match():
     before_match_number = Match.query.filter_by(tournament_id=tournament_id).count()
     next_match_number = before_match_number + 1
 
-    if (next_match_number >= tournament.amount_match):
+    if (next_match_number > tournament.amount_match):
         return {"error":'Match OverFlow'}, 400
 
     match = database.add_instance(Match, loser=loser, winner=winner,tournament_id=tournament_id, match = next_match_number)
