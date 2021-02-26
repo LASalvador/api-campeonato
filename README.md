@@ -83,5 +83,5 @@ docker build -t api_test-campeonato -f api/Dockerfile.test ./api
 ```
 ### Rodando suit de TEST
 ```
-docker-compose -f ./docker-compose.test.yml up
+docker-compose -f ./docker-compose.test.yml up --remove-orphans --abort-on-container-exit
 ```
