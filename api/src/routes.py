@@ -12,7 +12,7 @@ def index():
         200:
             description: Server Works
     """
-    return 'Server Works!!'
+    return {'status': 'Server Works'}
 
 @app.route('/competitor', methods=['POST'])
 def post_competitor():
