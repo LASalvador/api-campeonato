@@ -81,7 +81,7 @@ docker-compose down
 ```
 docker build -t api_test-campeonato -f api/Dockerfile.test ./api
 ```
-### Subindo containers TEST
+### Rodando suit de TEST
 ```
 docker-compose -f ./docker-compose.test.yml up
 ```
