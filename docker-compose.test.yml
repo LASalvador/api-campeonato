@@ -1,0 +1,25 @@
+version: "3"
+services:
+  api_test:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.test
+    image: api_test-campeonato
+    container_name: api_test-campeonato-container
+    ports:
+      - 5000:5000
+    volumes:
+      - ./api:/app
+    environment:
+      - APP_ENV=testing
+    depends_on:
+      - db
+  db:
+    image: mysql-image
+    container_name: mysql-container
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: olamundo
+    volumes:
+      - ./db/data/:/var/lib/mysql
